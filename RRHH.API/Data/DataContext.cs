@@ -18,6 +18,8 @@ public class DataContext : IdentityDbContext<AplicationUser>
     #region Entities
     public virtual DbSet<Employee> Employees { get; set; }
     public virtual DbSet<Position> Positions { get; set; }
+    public virtual DbSet<Payment> Payments { get; set; }
+
     #endregion
 
     protected override void OnModelCreating(ModelBuilder builder)
