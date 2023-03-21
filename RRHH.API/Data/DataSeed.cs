@@ -7,7 +7,7 @@ public static class DataSeed
 {
     public static async Task SeedIdentityData(this WebApplication app)
     {
-        var services = app.Services.CreateAsyncScope().ServiceProvider;
+        var services = app.Services.CreateScope().ServiceProvider;
         await SeedRoles(services);
 
         var userManager = services.GetRequiredService<UserManager<AplicationUser>>();
@@ -17,13 +17,15 @@ public static class DataSeed
         {
             rhUser = new AplicationUser()
             {
+                Id=Guid.NewGuid().ToString(),
                 FullName = "Julian Segura",
                 Email = "julianl.segura@gmail.com",
                 UserName = "julianl.segura@gmail.com",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Enabled = true,
             };
 
-            await CreateUser(userManager, rhUser, "AbC123", UserRole.RH.ToString());
+            await CreateUser(userManager, rhUser, "123456", UserRole.RH.ToString());
         };
 
 
@@ -31,12 +33,22 @@ public static class DataSeed
 
     private static async Task CreateUser(UserManager<AplicationUser> userManager, AplicationUser user, string password, string role)
     {
-        var created = await userManager.CreateAsync(user, password);
-        if (created.Succeeded)
+        try
         {
-            var createdUser = await userManager.FindByEmailAsync(user.Email);
-            await userManager.AddToRoleAsync(createdUser, role);
+            var created = userManager.CreateAsync(user, password).Result;
+            if (created.Succeeded)
+            {
+                //var createdUser = await userManager.FindByEmailAsync(user.Email);
+
+                await userManager.AddToRoleAsync(user, role);
+            }
         }
+        catch (Exception e)
+        {
+
+            throw;
+        }
+        
     }
 
 
