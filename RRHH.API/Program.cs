@@ -7,8 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<DataContext>(opt =>
 {
-    var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-    var cnstring = $@"Filename={folder}\Data\{builder.Configuration["LocalDB"]}";
+    var cnstring = $@"Filename=Data\DB\{builder.Configuration.GetConnectionString("LocalDB")}";
     opt.UseSqlite(cnstring);
 });
 
@@ -17,6 +16,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var ctx = scope.ServiceProvider.GetService<DataContext>();
+    ctx.Database.EnsureCreated();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
