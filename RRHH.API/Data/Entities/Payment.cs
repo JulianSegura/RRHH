@@ -5,7 +5,7 @@ public class Payment
     public string Id { get; set; } = new Guid().ToString();
     public DateTime Date { get; set; }
     public int CorrespondingMonth { get; set; }
-    public Employee Employee { get; set; }
+    public virtual Employee Employee { get; set; }
     public decimal GrossAmount { get; set; }
     public decimal EmployeeAFPDiscount { get; set;}
     public decimal EmployeeInsuranceDiscount { get;set;}

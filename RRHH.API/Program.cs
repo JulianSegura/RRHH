@@ -1,6 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using RRHH.API.Data;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<DataContext>(opt =>
+{
+    var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+    var cnstring = $@"Filename={folder}\Data\{builder.Configuration["LocalDB"]}";
+    opt.UseSqlite(cnstring);
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

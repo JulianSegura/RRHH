@@ -34,7 +34,7 @@ public class DataContext : IdentityDbContext<AplicationUser>
         #region Keys/Constraints
 
         #endregion
-
+        base.OnModelCreating(builder);
     }
 
 }
