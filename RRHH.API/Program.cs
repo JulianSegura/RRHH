@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RRHH.API;
 using RRHH.API.Data;
-using System.Reflection;
+using RRHH.API.Data.Entities;
+using RRHH.API.UserManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +14,28 @@ builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlite(cnstring);
 });
 
+//Add services
+builder.Services.AddIdentity<AplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<DataContext>()
+                .AddRoleManager<RoleManager<IdentityRole>>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireNonAlphanumeric=false;
+    options.Password.RequireDigit=false;
+    options.Password.RequireLowercase=false;
+    options.Password.RequireUppercase=false;
+});
+
+builder.Services.AddScoped<UsersService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//Create DB
 using (var scope = app.Services.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetService<DataContext>();
@@ -48,11 +67,20 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 });
 
+app.MapPost("/Login", async (string username, string password, UsersService usersService) =>
+{
+    var user = await usersService.Login(username, password);
+    return new ApiResult(false,
+                         Errors: new List<string> { "User doesn't exists", "Another error" });
+
+});
+
 app.MapGet("/allemployees", () =>
 {
     return "Hello All Employees";
 });
 
+app.SeedIdentityData();
 
 app.Run();
 

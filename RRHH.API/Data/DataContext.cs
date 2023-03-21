@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using RRHH.API.Data.Entities;
 
 namespace RRHH.API.Data;
@@ -36,5 +37,4 @@ public class DataContext : IdentityDbContext<AplicationUser>
         #endregion
         base.OnModelCreating(builder);
     }
-
 }
