@@ -38,8 +38,8 @@ public static class DataSeed
             var created = userManager.CreateAsync(user, password).Result;
             if (created.Succeeded)
             {
-                //var createdUser = await userManager.FindByEmailAsync(user.Email);
-
+                var createdUser = await userManager.FindByEmailAsync(user.Email);
+                //var createdUser  = await userManager.FindByIdAsync(user.Id);
                 await userManager.AddToRoleAsync(user, role);
             }
         }

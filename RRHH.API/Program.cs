@@ -12,6 +12,7 @@ builder.Services.AddDbContext<DataContext>(opt =>
 {
     var cnstring = $@"Filename=Data\DB\{builder.Configuration.GetConnectionString("LocalDB")}";
     opt.UseSqlite(cnstring);
+    //opt.UseSqlServer(builder.Configuration.GetConnectionString("SQLRRHHContext"));
 });
 
 //Add services
@@ -71,8 +72,12 @@ app.MapGet("/weatherforecast", () =>
 app.MapPost("/Login", async (string username, string password, UsersService usersService) =>
 {
     var user = await usersService.Login(username, password);
-    return new ApiResult(false,
-                         Errors: new List<string> { "User doesn't exists", "Another error" });
+
+    if (user is null)
+        return new ApiResult(false, Errors: new List<string> { "Usuario o password incorrecto" });
+ 
+    return new ApiResult(true,
+                         Data: user);
 
 });
 

@@ -26,14 +26,14 @@ public sealed class UsersService
         var signinResult = await _signInManager.PasswordSignInAsync(dbUser, password, isPersistent: true, lockoutOnFailure: false);
         if (!signinResult.Succeeded) return null;
 
-        var userRole = await _userManager.GetRolesAsync(dbUser);
+        var userRoles = await _userManager.GetRolesAsync(dbUser);
 
         return new UserDTO
         {
             Id = dbUser.Id,
             FullName = dbUser.FullName,
             Email = dbUser.Email,
-            Role = userRole.FirstOrDefault() ?? "No Role"
+            Role = userRoles.FirstOrDefault() ?? "RH"
         };
     }
 }
